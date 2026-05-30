@@ -233,6 +233,10 @@ const styles = `
     height: 34px;
     border: 1px solid transparent;
     cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .cert-btn {
     background-color: #71a304;
@@ -240,6 +244,7 @@ const styles = `
     width: 75px;
     height: 34px;
     font-weight: bold;
+    font-size: 14px;
   }
   .waiting-btn {
     background-color: #71a304;
@@ -247,6 +252,7 @@ const styles = `
     font-weight: bold;
     opacity: 0.6;
     cursor: not-allowed;
+    font-size: 13px;
   }
   .done-btn {
     font-size: 12px;

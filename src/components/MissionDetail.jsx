@@ -2,29 +2,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function MissionDetail() {
-  // 상태 관리 정의
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mission, setMission] = useState(null);
   const [result, setResult] = useState(null);
   
-  // 폼 입력 상태 관리
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null); // 이미지 미리보기용 (선택 사항 추가)
-  const [memo, setMemo] = useState('');
+  const [previewUrl, setPreviewUrl] = useState(null);
 
-  // 1. URL 쿼리 스트링에서 missionId 가져오기
   const getQueryMissionId = () => {
     const params = new URLSearchParams(window.location.search);
     return params.get('missionId');
   };
 
-  // 2. 미션 상세 데이터 로드 (GET /api/v1/missions/detail?missionId=...)
   const fetchMissionDetail = async () => {
     try {
       setLoading(true);
       const missionId = getQueryMissionId();
-      // query parameter가 있으면 넘겨주고, 없으면 백엔드가 다음 미션을 자동으로 찾아옴
       const url = missionId ? `/api/v1/missions/detail?missionId=${missionId}` : '/api/v1/missions/detail';
       
       const response = await axios.get(url);
@@ -45,16 +39,14 @@ export default function MissionDetail() {
     fetchMissionDetail();
   }, []);
 
-  // 3. 파일 선택 핸들러
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file)); // 미리보기 URL 생성
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
-  // 4. 미션 제출 핸들러 (POST /api/v1/missions/submit)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedFile) {
@@ -63,11 +55,9 @@ export default function MissionDetail() {
     }
 
     try {
-      // multipart/form-data 전송을 위한 FormData 객체 생성
       const formData = new FormData();
       formData.append('missionId', mission.mission_id);
-      formData.append('photo', selectedFile); // uploader.single('photo')와 매칭
-      formData.append('memo', memo);
+      formData.append('photo', selectedFile); 
 
       const response = await axios.post('/api/v1/missions/submit', formData, {
         headers: {
@@ -78,7 +68,7 @@ export default function MissionDetail() {
       if (response.data.success) {
         alert(response.data.message || '미션 제출 완료');
         if (response.data.redirectUrl) {
-          window.location.href = response.data.redirectUrl; // 기존 리다이렉트 흐름 유지
+          window.location.href = response.data.redirectUrl;
         } else {
           await fetchMissionDetail();
         }
@@ -99,11 +89,9 @@ export default function MissionDetail() {
       <div className="mission-container">
         {mission ? (
           <>
-            {/* 미션 설명 */}
             <div className="mission-title">{mission.description}</div>
 
             {result ? (
-              /* 케이스 1: 이미 완료한 미션인 경우 */
               <>
                 <p style={{ color: 'green' }}>✅ 완료한 미션입니다</p>
                 {result.image_source && (
@@ -114,22 +102,15 @@ export default function MissionDetail() {
                     style={{ borderRadius: '8px', marginBottom: '15px' }}
                   />
                 )}
-                {result.memo && (
-                  <p>
-                    <strong>소감:</strong> {result.memo}
-                  </p>
-                )}
                 <div style={{ marginTop: '15px' }}>
-                  <a href="/api/v1/missions" style={{ color: '#71a304', fontWeight: 'bold', textDecoration: 'none' }}>
+                  <a href="/missions" style={{ color: '#71a304', fontWeight: 'bold', textDecoration: 'none' }}>
                     다음 미션 보기
                   </a>
                 </div>
               </>
             ) : (
-              /* 케이스 2: 아직 완료하지 않아 제출 폼을 보여주는 경우 */
               <form onSubmit={handleSubmit}>
                 <div className="upload-box">
-                  {/* 파일이 선택되면 구름 이미지 대신 선택된 파일 미리보기를 보여줌 */}
                   {previewUrl ? (
                     <img src={previewUrl} alt="preview" style={{ objectFit: 'cover', borderRadius: '6px' }} />
                   ) : (
@@ -149,21 +130,6 @@ export default function MissionDetail() {
                   />
                 </div>
 
-                {/* 기존 EJS 코드에서는 체크박스 전환 형태의 스크립트 흔적이 있었으나 HTML엔 마크업이 생략되어 있었음.
-                  리액트 환경에 맞춰 파일이 업로드되면 소감 박스가 자연스럽게 나타나도록 UI 사용성을 보정
-                */}
-                {selectedFile && (
-                  <div id="memo-box">
-                    <textarea 
-                      name="memo" 
-                      placeholder="소감 작성 (선택)" 
-                      rows="3"
-                      value={memo}
-                      onChange={(e) => setMemo(e.target.value)}
-                    />
-                  </div>
-                )}
-
                 <button type="submit" className="submit-button">
                   완료하기
                 </button>
@@ -171,7 +137,6 @@ export default function MissionDetail() {
             )}
           </>
         ) : (
-          /* 케이스 3: 모든 미션을 완료한 경우 */
           <a href="/last-complete" style={{ textDecoration: 'none', color: 'inherit' }}>
             <h2>🎉 모든 미션을 완료했습니다!</h2>
           </a>
@@ -181,7 +146,6 @@ export default function MissionDetail() {
   );
 }
 
-// 기존 모놀로식 CSS 명세를 완벽히 박아넣은 스타일 규칙
 const styles = `
   .mission-detail-body {
     margin: 0;
@@ -241,20 +205,6 @@ const styles = `
 
   input[type="file"] {
     display: none;
-  }
-
-  #memo-box {
-    margin-top: 10px;
-    width: 100%;
-  }
-
-  textarea {
-    width: 95%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    resize: none;
-    font-family: inherit;
   }
 
   .submit-button {
