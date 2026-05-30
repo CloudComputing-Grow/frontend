@@ -1,122 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+// src/App.jsx
+import React from 'react';
+import MissionDashboard from './components/MissionDashboard';
+import MissionDetail from './components/MissionDetail';
+import AdminCertManager from './components/AdminCertManager';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  // 현재 브라우저 주소창의 경로를 가져옴
+  const path = window.location.pathname;
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+  // 경로에 따라 어떤 컴포넌트를 보여줄지 분기 처리
+  switch (path) {
+    case '/missions':
+      return <MissionDashboard />;
+      
+    case '/dashboard':
+    case '/api/v1/missions/detail':
+      return <MissionDetail />;
+      
+    case '/admin/certs':
+    case '/api/v1/admin/certs':
+      return <AdminCertManager />;
+      
+    default:
+      // 기본 메인 화면일 때 쉽게 이동할 수 있도록 안내 링크 제공
+      return (
+        <div style={{ textAlign: 'center', marginTop: '50px', fontFamily: 'sans-serif' }}>
+          <h2>🌱 미션 서비스 프론트엔드 테스트 메인</h2>
+          <p>아래 링크를 클릭하거나 주소창에 경로를 입력해 화면을 테스트해 보세요.</p>
+          <hr style={{ width: '300px', margin: '20px auto' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+            <a href="/missions" style={linkStyle}>1. 유저 미션 대시보드 화면 ➡️</a>
+            <a href="/dashboard" style={linkStyle}>2. 유저 미션 상세 / 제출 화면 ➡️</a>
+            <a href="/admin/certs" style={linkStyle}>3. 관리자 인증 승인 화면 ➡️</a>
+          </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      );
+  }
 }
 
-export default App
+const linkStyle = {
+  fontSize: '18px',
+  color: '#4CAF50',
+  fontWeight: 'bold',
+  textDecoration: 'none',
+  padding: '10px 20px',
+  border: '1px solid #4CAF50',
+  borderRadius: '8px',
+  width: '250px',
+  backgroundColor: '#f9fff3'
+};
