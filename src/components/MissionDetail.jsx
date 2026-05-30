@@ -68,7 +68,7 @@ export default function MissionDetail() {
       if (response.data.success) {
         alert(response.data.message || '미션 제출 완료');
         if (response.data.redirectUrl) {
-          window.location.href = response.data.redirectUrl;
+          window.location.href = '/missions';
         } else {
           await fetchMissionDetail();
         }
