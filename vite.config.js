@@ -10,6 +10,8 @@ export default defineConfig({
         target: 'http://localhost:3001', // 실제 로컬 백엔드 주소와 포트로 설정
         changeOrigin: true,
         secure: false,
+	cookieDomainRewrite: 'localhost',
+        cookiePathRewrite: '/'
       }
     }
   }
