@@ -1,156 +1,122 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import api from '../api/axiosInstance';
-import BottomNav from '../components/BottomNav';
-import '../styles/mypage.css';
+import '../styles/auth.css';
 
-export default function MyPage() {
-    const [data, setData] = useState(null);
+export default function Register() {
+    const [form, setForm] = useState({
+        nickname: '',
+        email: '',
+        password: '',
+        passwordConfirm: '',
+        agree: false
+    });
+
     const [error, setError] = useState('');
 
-    const loadMyPage = async () => {
-        try {
-            const res = await api.get('/mypage/api');
-            setData(res.data.data);
-        } catch (err) {
-            setError(err.response?.data?.message || '마이페이지 조회 실패');
-        }
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+
+        setForm({
+            ...form,
+            [name]: type === 'checkbox' ? checked : value
+        });
     };
 
-    useEffect(() => {
-        loadMyPage();
-    }, []);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
 
-    const handleLogout = async () => {
-        try {
-            const refreshToken = localStorage.getItem('refreshToken');
-
-            await api.post('/logout', { refreshToken });
-
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-
-            window.location.href = '/login';
-        } catch {
-            alert('로그아웃 중 오류가 발생했습니다.');
+        if (!form.agree) {
+            setError('이용약관에 동의해야 합니다.');
+            return;
         }
-    };
-
-    const handleWithdraw = async () => {
-        if (!confirm('정말 탈퇴하시겠습니까?')) return;
 
         try {
-            const refreshToken = localStorage.getItem('refreshToken');
-
-            await api.delete('/delete-account', {
-                data: { refreshToken }
+            const res = await api.post('/auth/signup', {
+                email: form.email,
+                nickname: form.nickname,
+                password: form.password,
+                passwordConfirm: form.passwordConfirm
             });
 
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+            localStorage.setItem('accessToken', res.data.data.accessToken);
 
-            alert('탈퇴가 완료되었습니다.');
-            window.location.href = '/login';
-        } catch {
-            alert('탈퇴 중 오류가 발생했습니다.');
+            window.location.href = '/register-success';
+        } catch (err) {
+            setError(err.response?.data?.message || '회원가입 중 오류가 발생했습니다.');
         }
     };
 
-    if (error) {
-        return <div className="mypage-wrapper">{error}</div>;
-    }
-
-    if (!data) {
-        return <div className="mypage-wrapper">로딩 중...</div>;
-    }
-
-    const completed = data.missionStatus?.completed ?? 0;
-    const total = data.missionStatus?.total ?? 0;
-    const percent = total > 0 ? (completed / total) * 100 : 0;
-
     return (
-        <>
-            <div className="mypage-wrapper">
-                <div className="mypage-container">
-                    <div className="profile-section">
-                        <div className="profile-wrapper">
-                            <div className="profile-img">
-                                <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="256" cy="256" r="256" fill="black" />
-                                    <path
-                                        d="M256 128c-35.3 0-64 28.7-64 64s28.7 64 64 64
-                                        64-28.7 64-64-28.7-64-64-64zm0 160c-70.7 0-128 
-                                        57.3-128 128h256c0-70.7-57.3-128-128-128z"
-                                        fill="white"
-                                    />
-                                </svg>
-                            </div>
+        <div className="auth-page">
+            <div className="auth-container">
+                <div className="register-title">당신의 정원을 가꿔 보세요.</div>
 
-                            {data.badgeType && (
-                                <img
-                                    className="badge-overlay"
-                                    src={`/images/badge/${data.badgeType}.png`}
-                                    alt="휘장"
-                                />
-                            )}
-                        </div>
+                <form className="auth-form" onSubmit={handleSubmit}>
+                    <label>닉네임</label>
+                    <input
+                        type="text"
+                        name="nickname"
+                        placeholder="닉네임"
+                        value={form.nickname}
+                        onChange={handleChange}
+                        onFocus={() => setForm({ ...form, nickname: '' })}
+                        required
+                    />
 
-                        <div className="nickname-box">
-                            <p className="nickname">{data.nickname} 님</p>
-                            <p className="level">{data.level}단계</p>
-                        </div>
+                    <label>이메일</label>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="이메일 주소"
+                        value={form.email}
+                        onChange={handleChange}
+                        onFocus={() => setForm({ ...form, email: '' })}
+                        required
+                    />
+
+                    <label>비밀번호</label>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="비밀번호 (8자 이상)"
+                        value={form.password}
+                        onChange={handleChange}
+                        minLength={8}
+                        onFocus={() => setForm({ ...form, password: '' })}
+                        required
+                    />
+
+                    <label>비밀번호 확인</label>
+                    <input
+                        type="password"
+                        name="passwordConfirm"
+                        placeholder="비밀번호 확인"
+                        value={form.passwordConfirm}
+                        onChange={handleChange}
+                        onFocus={() => setForm({ ...form, passwordConfirm: '' })}
+                        required
+                    />
+
+                    {error && <div className="error-message">{error}</div>}
+
+                    <div className="checkbox-row">
+                        <input
+                            type="checkbox"
+                            name="agree"
+                            checked={form.agree}
+                            onChange={handleChange}
+                        />
+                        <label>이용약관에 동의합니다.</label>
                     </div>
 
-                    <div className="mission-section">
-                        <p className="mission-title">현재 진행 현황</p>
-                        <p className="mission-progress-text">
-                            현재 진행 {completed} / {total}개 완료
-                        </p>
+                    <button type="submit" className="register-btn">가입하기</button>
+                </form>
 
-                        <div className="progress-bar">
-                            <div
-                                className="progress-bar-fill"
-                                style={{ width: `${percent}%` }}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="menu-buttons">
-                        <button onClick={() => window.location.href = '/achievements?category=basic&page=1'}>
-                            도감
-                        </button>
-                        <button onClick={() => window.location.href = '/inventory'}>
-                            인벤토리
-                        </button>
-                        <button onClick={() => window.location.href = '/diary'}>
-                            내가 쓴 일기
-                        </button>
-                        <button onClick={() => window.location.href = '/scrap'}>
-                            스크랩한 글
-                        </button>
-                    </div>
-
-                    <div className="personal-section">
-                        <p className="personal-title">개인정보 수정</p>
-                        <p className="email-text">{data.email}</p>
-
-                        <div className="small-buttons-vertical">
-                            <button onClick={() => window.location.href = '/change-email'}>
-                                이메일 변경
-                            </button>
-                            <button onClick={() => window.location.href = '/change-password'}>
-                                비밀번호 변경
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="logout-withdraw">
-                        <span onClick={handleLogout}>로그아웃</span>
-                        <span onClick={handleWithdraw}>탈퇴</span>
-                    </div>
+                <div className="center-link">
+                    <a href="/auth/login">로그인</a>
                 </div>
             </div>
-
-            <BottomNav />
-        </>
+        </div>
     );
 }

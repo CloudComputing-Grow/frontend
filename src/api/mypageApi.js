@@ -1,4 +1,4 @@
 import api from './axiosInstance';
 
 export const getMyPage = () =>
-    api.get('/mypage/api');
+    api.get('/user/mypage');

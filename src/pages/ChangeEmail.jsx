@@ -13,11 +13,11 @@ export default function ChangeEmail() {
         setError('');
 
         try {
-            const res = await api.patch('/change-email', { email });
+            const res = await api.patch('/user/change-email', { email });
             setMessage(res.data.message || '이메일 변경 성공. 다시 로그인해주세요.');
 
             setTimeout(() => {
-                window.location.href = '/login';
+                window.location.href = '/auth/login';
             }, 1000);
         } catch (err) {
             setError(err.response?.data?.message || '이메일 변경 실패');

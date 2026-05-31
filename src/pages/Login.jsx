@@ -22,12 +22,12 @@ export default function Login() {
         setError('');
 
         try {
-            const res = await api.post('/login', form);
+            const res = await api.post('/auth/login', form);
 
             localStorage.setItem('accessToken', res.data.data.accessToken);
             localStorage.setItem('refreshToken', res.data.data.refreshToken);
 
-            window.location.href = '/mypage';
+            window.location.href = '/user/mypage';
         } catch (err) {
             setError(err.response?.data?.message || '로그인 중 오류가 발생했습니다.');
         }
@@ -70,7 +70,7 @@ export default function Login() {
                     <button
                         type="button"
                         className="register-btn"
-                        onClick={() => window.location.href = '/register'}
+                        onClick={() => window.location.href = '/auth/signup'}
                     >
                         회원가입
                     </button>

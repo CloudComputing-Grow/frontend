@@ -30,7 +30,7 @@ export default function ChangePassword() {
         }
 
         try {
-            const res = await api.patch('/change-password', {
+            const res = await api.patch('/user/change-password', {
                 oldPassword: form.oldPassword,
                 newPassword: form.newPassword
             });
@@ -41,7 +41,7 @@ export default function ChangePassword() {
             setMessage(res.data.message || '비밀번호 변경 성공. 다시 로그인해주세요.');
 
             setTimeout(() => {
-                window.location.href = '/login';
+                window.location.href = '/auth/login';
             }, 1000);
         } catch (err) {
             setError(err.response?.data?.message || '비밀번호 변경 실패');

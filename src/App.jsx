@@ -18,9 +18,9 @@ function App() {
 
         <Route path="/" element={<Login />} />
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/auth/login" element={<Login />} />
 
-        <Route path="/register" element={<Register />} />
+        <Route path="/auth/signup" element={<Register />} />
 
         <Route
           path="/register-success"
@@ -30,19 +30,19 @@ function App() {
         {/* 마이페이지 */}
 
         <Route
-          path="/mypage"
+          path="/user/mypage"
           element={<MyPage />}
         />
 
         {/* 개인정보 수정 */}
 
         <Route
-          path="/change-email"
+          path="/user/change-email"
           element={<ChangeEmail />}
         />
 
         <Route
-          path="/change-password"
+          path="/user/change-password"
           element={<ChangePassword />}
         />
 

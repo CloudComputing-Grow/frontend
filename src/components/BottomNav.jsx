@@ -18,7 +18,7 @@ export default function BottomNav() {
                 <div>커뮤니티</div>
             </a>
 
-            <a href="/mypage">
+            <a href="/user/mypage">
                 <div>👤</div>
                 <div>마이페이지</div>
             </a>

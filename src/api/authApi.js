@@ -1,22 +1,22 @@
 import api from './axiosInstance';
 
 export const login = (data) =>
-    api.post('/login', data);
+    api.post('/auth/login', data);
 
 export const register = (data) =>
-    api.post('/register', data);
+    api.post('/auth/signup', data);
 
 export const logout = (refreshToken) =>
-    api.post('/logout', { refreshToken });
+    api.post('/user/logout', { refreshToken });
 
 export const changeEmail = (email) =>
-    api.patch('/change-email', { email });
+    api.patch('/user/change-email', { email });
 
 export const changePassword = (
     oldPassword,
     newPassword
 ) =>
-    api.patch('/change-password', {
+    api.patch('/user/change-password', {
         oldPassword,
         newPassword
     });
@@ -24,6 +24,6 @@ export const changePassword = (
 export const deleteAccount = (
     refreshToken
 ) =>
-    api.delete('/delete-account', {
+    api.delete('/user/delete-account', {
         data: { refreshToken }
     });
