@@ -76,26 +76,6 @@ export default function MissionDashboard() {
     window.location.href = `/dashboard?missionId=${missionId}`;
   };
 
-  const handleWriteDiary = async (executionId) => {
-    try {
-      // 백엔드 세션의 prevConfirmedId를 null로 밀어버리는 API 호출
-      const response = await axios.post('/api/v1/missions/clear-modal', {});
-      
-      if (response.data.success) {
-        console.log('백엔드 세션 클리어 완료 확인됨. 화면 상태 끄는 중...');
-        setShowFertilizerModal(false);
-
-        console.log('일기 작성 페이지로 이동합니다.');
-        window.location.href = `/dashboard/diary/${executionId}`;
-      }
-    
-    } catch (err) {
-      console.error('모달 상태 업데이트 실패:', err);
-      // 에러가 나더라도 유저가 일기는 쓸 수 있도록 안전장치 이동
-      window.location.href = `/dashboard/diary/${executionId}`;
-    }
-  };
-  
 
   // 완료일자 KST 변환 보정 및 포맷팅 포팅 (기존 EJS 백엔드 보정 로직과 일치)
   const formatCompletedDate = (dateString) => {
@@ -192,12 +172,9 @@ export default function MissionDashboard() {
             </p>
           </div>
           <div className="modal-content2">
-            <button
-	      className="write-diary-btn"
-	      onClick={() => handleWriteDiary(latestMissionExecutionId)}
-	    >
-	      일기 작성
-	    </button>
+            <a href={`/dashboard/diary/${latestMissionExecutionId}`}>  
+	      <button className="write-diary-btn">일기 작성</button>
+	    </a>
           </div>
         </div>
       )}
