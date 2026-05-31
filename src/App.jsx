@@ -3,6 +3,7 @@ import React from 'react';
 import MissionDashboard from './components/MissionDashboard';
 import MissionDetail from './components/MissionDetail';
 import AdminCertManager from './components/AdminCertManager';
+import LastComplete from './components/LastComplete';
 
 export default function App() {
   // 현재 브라우저 주소창의 경로를 가져옴
@@ -20,7 +21,10 @@ export default function App() {
     case '/admin/certs':
     case '/api/v1/admin/certs':
       return <AdminCertManager />;
-      
+    
+    case '/last-complete':
+      return <LastComplete />;
+
     default:
       // 기본 메인 화면일 때 쉽게 이동할 수 있도록 안내 링크 제공
       return (
@@ -32,6 +36,7 @@ export default function App() {
             <a href="/missions" style={linkStyle}>1. 유저 미션 대시보드 화면 ➡️</a>
             <a href="/dashboard" style={linkStyle}>2. 유저 미션 상세 / 제출 화면 ➡️</a>
             <a href="/admin/certs" style={linkStyle}>3. 관리자 인증 승인 화면 ➡️</a>
+	    <a href="/last-complete" style={linkStyle}>4. 모든 미션 완료 화면 </a>
           </div>
         </div>
       );
