@@ -12,7 +12,7 @@ export default function RegisterSuccess() {
 
             <button
                 className="success-btn"
-                onClick={() => window.location.href = '/login'}
+                onClick={() => window.location.href = '/auth/login'}
             >
                 로그인하러 가기
             </button>
