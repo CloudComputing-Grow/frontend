@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+// [수정] react-router-dom에서 필요한 훅과 컴포넌트 가져오기
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
 export default function MissionDetail() {
   const [loading, setLoading] = useState(true);
@@ -10,15 +12,15 @@ export default function MissionDetail() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
 
-  const getQueryMissionId = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('missionId');
-  };
+  // [수정] react-router-dom 훅 선언
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const fetchMissionDetail = async () => {
     try {
       setLoading(true);
-      const missionId = getQueryMissionId();
+      // [수정] searchParams.get()으로 간결하게 쿼리 스트링 추출
+      const missionId = searchParams.get('missionId');
       const url = missionId ? `/api/v1/missions/detail?missionId=${missionId}` : '/api/v1/missions/detail';
       
       const response = await axios.get(url);
@@ -37,7 +39,7 @@ export default function MissionDetail() {
 
   useEffect(() => {
     fetchMissionDetail();
-  }, []);
+  }, [searchParams]); // [수정] 쿼리 파라미터가 바뀔 때도 데이터를 다시 불러오도록 의존성 주입
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -68,7 +70,8 @@ export default function MissionDetail() {
       if (response.data.success) {
         alert(response.data.message || '미션 제출 완료');
         if (response.data.redirectUrl) {
-          window.location.href = '/missions';
+          // [수정] window.location.href 대신 새로고침 없는 navigate 사용
+          navigate('/missions');
         } else {
           await fetchMissionDetail();
         }
@@ -103,9 +106,10 @@ export default function MissionDetail() {
                   />
                 )}
                 <div style={{ marginTop: '15px' }}>
-                  <a href="/missions" style={{ color: '#71a304', fontWeight: 'bold', textDecoration: 'none' }}>
+                  {/* [수정] <a> 태그를 <Link>로 변경하여 싱글 페이지 앱(SPA) 유지 */}
+                  <Link to="/missions" style={{ color: '#71a304', fontWeight: 'bold', textDecoration: 'none' }}>
                     다음 미션 보기
-                  </a>
+                  </Link>
                 </div>
               </>
             ) : (
@@ -137,9 +141,10 @@ export default function MissionDetail() {
             )}
           </>
         ) : (
-          <a href="/last-complete" style={{ textDecoration: 'none', color: 'inherit' }}>
+          /* [수정] 모든 미션 완료 시 이동하는 부분도 <Link>로 변경 */
+          <Link to="/last-complete" style={{ textDecoration: 'none', color: 'inherit' }}>
             <h2>🎉 모든 미션을 완료했습니다!</h2>
-          </a>
+          </Link>
         )}
       </div>
     </div>
