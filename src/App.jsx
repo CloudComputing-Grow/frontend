@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Home from './pages/Home'
+import Collection from './pages/Collection'
 import Inventory from './pages/Inventory'
 import Market from './pages/Market'
 import MissionDashboard from './components/MissionDashboard';
@@ -14,6 +16,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/collection" element={<Collection />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/market" element={<Market />} />
         <Route path="/missions" element={<MissionDashboard />} />
