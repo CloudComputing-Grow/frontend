@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/auth': 'http://localhost:3001',
-      '/user': 'http://localhost:3000',
+      '/user': 'http://localhost:3001',
       '/achievement': 'http://localhost:3002',
       '/api/v1/missions': 'http://localhost:3003',
       '/api/v1/admin': 'http://localhost:3003',
