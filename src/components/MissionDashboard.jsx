@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+// [수정] react-router-dom에서 페이지 이동을 위한 훅과 컴포넌트 가져오기
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function MissionDashboard() {
-  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [missions, setMissions] = useState([]);
@@ -12,6 +13,9 @@ export default function MissionDashboard() {
   const [showFertilizerModal, setShowFertilizerModal] = useState(false);
   const [latestMissionExecutionId, setLatestMissionExecutionId] = useState(null);
   const [showLevelOptionModal, setShowLevelOptionModal] = useState(false);
+
+  // [수정] react-router-dom의 navigate 훅 선언
+  const navigate = useNavigate();
 
   // 1. 미션 목록 데이터 로드 (GET /api/v1/missions)
   const fetchDashboardData = async () => {
@@ -45,7 +49,6 @@ export default function MissionDashboard() {
     try {
       const response = await axios.post(`/api/v1/missions/confirm/${executionId}`);
       if (response.data.success) {
-        // 성공 시 데이터 리로드 (기존 모놀로식의 redirect 흐름 대체)
         await fetchDashboardData();
       }
     } catch (err) {
@@ -60,7 +63,12 @@ export default function MissionDashboard() {
       const response = await axios.post('/api/v1/missions/level-option', { option });
       if (response.data.success) {
         if (response.data.redirectUrl) {
-          window.location.href = response.data.redirectUrl;
+          // [수정] 외부 링크 주소가 아니라 우리 프론트엔드 라우트 주소라면 navigate를 사용
+          if (response.data.redirectUrl.startsWith('http')) {
+            window.location.href = response.data.redirectUrl;
+          } else {
+            navigate(response.data.redirectUrl);
+          }
         } else {
           await fetchDashboardData();
         }
@@ -73,11 +81,11 @@ export default function MissionDashboard() {
 
   // 4. 인증 버튼 클릭 시 디테일 뷰 이동 처리
   const handleCertClick = (missionId) => {
-    window.location.href = `/dashboard?missionId=${missionId}`;
+    // [수정] window.location.href 대신 navigate()를 사용해 미션 상세로 쿼리 스트링 전달하며 이동
+    navigate(`/dashboard?missionId=${missionId}`);
   };
 
-
-  // 완료일자 KST 변환 보정 및 포맷팅 포팅 (기존 EJS 백엔드 보정 로직과 일치)
+  // 완료일자 KST 변환 보정 및 포맷팅 포팅
   const formatCompletedDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -90,7 +98,6 @@ export default function MissionDashboard() {
 
   return (
     <div style={{ fontFamily: 'sans-serif' }}>
-      {/* CSS 스타일 시트 주입 */}
       <style>{styles}</style>
 
       {/* 사용자 정보 */}
@@ -172,9 +179,10 @@ export default function MissionDashboard() {
             </p>
           </div>
           <div className="modal-content2">
-            <a href={`/dashboard/diary/${latestMissionExecutionId}`}>  
-	      <button className="write-diary-btn">일기 작성</button>
-	    </a>
+            {/* [수정] <a> 태그를 <Link>로 변경하되, 만약 다른 서비스(예: 다이어리 서비스)의 라우트 주소라면 그대로 라우팅이 먹힘 */}
+            <Link to={`/dashboard/diary/${latestMissionExecutionId}`}>  
+              <button className="write-diary-btn">일기 작성</button>
+            </Link>
           </div>
         </div>
       )}
@@ -288,7 +296,7 @@ const styles = `
   }
   .write-diary-btn {
     background: #4CAF50;
-    color: white
+    color: white;
     padding: 12px 20px;
     margin-top: 15px;
     border: none;

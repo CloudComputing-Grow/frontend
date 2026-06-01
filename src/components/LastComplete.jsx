@@ -1,4 +1,6 @@
 import React from 'react';
+// [수정] react-router-dom에서 Link 컴포넌트 가져오기
+import { Link } from 'react-router-dom';
 
 export default function LastComplete() {
   return (
@@ -16,9 +18,10 @@ export default function LastComplete() {
           감사합니다.
         </div>
 
-        <a href="/diary">
+        {/* [수정] <a> 태그를 <Link>로 변경하여 새로고침 없이 일기 서비스로 이동 */}
+        <Link to="/diary">
           <button style={buttonStyle}>일기 보러가기</button>
-        </a>
+        </Link>
       </div>
     </div>
   );
