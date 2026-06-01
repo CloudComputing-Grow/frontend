@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Login from './pages/Login'
+import Register from './pages/Register'
 import Inventory from './pages/Inventory'
 import Market from './pages/Market'
 import MissionDashboard from './components/MissionDashboard';
@@ -10,6 +12,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/market" element={<Market />} />
         <Route path="/missions" element={<MissionDashboard />} />
