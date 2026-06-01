@@ -73,9 +73,11 @@ function Inventory() {
   }
 
   const visibleItems = items.filter(item =>
-    tab === 'basic'
-      ? item.category === 'BASIC_FRUIT' || item.category === 'FERTILIZER'
-      : item.category === 'GOLD_FRUIT'
+    item.qty > 0 && (
+      tab === 'basic'
+        ? item.category === 'BASIC_FRUIT' || item.category === 'FERTILIZER'
+        : item.category === 'GOLD_FRUIT'
+    )
   )
 
   return (
