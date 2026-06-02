@@ -116,16 +116,16 @@ export default function MyPage() {
                     </div>
 
                     <div className="menu-buttons">
-                        <button onClick={() => window.location.href = '/achievements?category=basic&page=1'}>
+                        <button onClick={() => window.location.href = `/collection?category=basic&page=1`}>
                             도감
                         </button>
-                        <button onClick={() => window.location.href = '/api/v1/inventory'}>
+                        <button onClick={() => window.location.href = `/inventory`}>
                             인벤토리
                         </button>
-                        <button onClick={() => window.location.href = '/api/v1/growth-diary/diaries'}>
+                        <button onClick={() => window.location.href = `/diary`}>
                             내가 쓴 일기
                         </button>
-                        <button onClick={() => window.location.href = '/api/v1/community/scraps'}>
+                        <button onClick={() => window.location.href = `/scrap`}>
                             스크랩한 글
                         </button>
                     </div>
