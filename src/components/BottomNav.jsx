@@ -1,27 +1,32 @@
-import './BottomNav.css';
+import { useNavigate, useLocation } from 'react-router-dom'
 
-export default function BottomNav() {
-    return (
-        <div className="bottom-nav">
-            <a href="/market">
-                <div>🎁</div>
-                <div>그로우마켓</div>
-            </a>
+function BottomNav() {
+  const navigate = useNavigate()
+  const location = useLocation()
 
-            <a href="/home">
-                <div>🏠</div>
-                <div>홈</div>
-            </a>
+  const hideOn = ['/auth/login', '/auth/signup']
+  if (hideOn.includes(location.pathname)) return null
 
-            <a href="/community">
-                <div>👥</div>
-                <div>커뮤니티</div>
-            </a>
-
-            <a href="/user/mypage">
-                <div>👤</div>
-                <div>마이페이지</div>
-            </a>
-        </div>
-    );
+  return (
+    <div className="bottom-nav">
+      <a onClick={() => navigate('/market')}>
+        <span>🎁</span>
+        <span>그로우마켓</span>
+      </a>
+      <a onClick={() => navigate('/home')}>
+        <span>🏠</span>
+        <span>홈</span>
+      </a>
+      <a onClick={() => navigate('/community')}>
+        <span>👥</span>
+        <span>커뮤니티</span>
+      </a>
+      <a onClick={() => navigate('/user/mypage')}>
+        <span>👤</span>
+        <span>마이페이지</span>
+      </a>
+    </div>
+  )
 }
+
+export default BottomNav

@@ -67,13 +67,7 @@ export default function Login() {
                     {error && <div className="error-message">{error}</div>}
 
                     <button type="submit" className="login-btn">로그인</button>
-                    <button
-                        type="button"
-                        className="register-btn"
-                        onClick={() => window.location.href = '/auth/signup'}
-                    >
-                        회원가입
-                    </button>
+                    <button type="button" className="register-btn" onClick={() => window.location.href = '/auth/signup'}> 회원가입 </button>
                 </form>
             </div>
         </div>
