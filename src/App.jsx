@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import BottomNav from './components/BottomNav'
+import './App.css'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
@@ -27,6 +29,7 @@ function App() {
         <Route path="/api/v1/admin/certs" element={<AdminCertManager />} />
         <Route path="/last-complete" element={<LastComplete />} />
       </Routes>
+      <BottomNav />
     </BrowserRouter>
   )
 }

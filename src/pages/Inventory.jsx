@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import '../styles/Inventory.css'
 
 const getImagePath = (itemName) => {
   const map = {
@@ -39,12 +40,14 @@ function Inventory() {
 
   const handleUseFertilizer = async () => {
     try {
+      // 현재 심은 나무의 growthStatusId 가져오기
+      const gardenRes = await axios.get('/api/v1/growth-diary/garden', { headers: { 'x-user-id': '1' } })
+      const growthStatusId = gardenRes.data?.growthStatusId || 1
+
       await axios.post('/api/v1/inventory/consume-fertilizer', {
         itemTypeId: selectedItem.type,
-        growthStatusId: 1
-      }, {
-        headers: { 'x-user-id': '1' }
-      })
+        growthStatusId
+      }, { headers: { 'x-user-id': '1' } })
       alert('비료 사용 완료!')
       setSelectedItem(null)
       const res = await axios.get('/api/v1/inventory', { headers: { 'x-user-id': '1' } })
@@ -59,9 +62,7 @@ function Inventory() {
     try {
       await axios.post('/api/v1/inventory/consume-seed', {
         itemTypeId: selectedItem.type
-      }, {
-        headers: { 'x-user-id': '1' }
-      })
+      }, { headers: { 'x-user-id': '1' } })
       alert('씨앗 심기 완료!')
       setSelectedItem(null)
       const res = await axios.get('/api/v1/inventory', { headers: { 'x-user-id': '1' } })
@@ -80,36 +81,68 @@ function Inventory() {
     )
   )
 
+  // 빈 슬롯 포함 20개 채우기
+  const filledSlots = [...visibleItems]
+  while (filledSlots.length < 20) filledSlots.push(null)
+
   return (
-    <div>
-      <h1> 인벤토리</h1>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '100vh', paddingTop: '40px', paddingBottom: '80px' }}>
+    <div className="inventory-container">
+      <div className="inventory-header">
+        <span>👜 인벤토리</span>
+      </div>
 
-      <button onClick={() => setTab('basic')}>기본</button>
-      <button onClick={() => setTab('gold')}>황금</button>
+      <div className="tab-buttons">
+        <button
+          className={`tab-btn ${tab === 'basic' ? 'active' : ''}`}
+          onClick={() => setTab('basic')}
+        >기본</button>
+        <button
+          className={`tab-btn ${tab === 'gold' ? 'active' : ''}`}
+          onClick={() => setTab('gold')}
+        >황금</button>
+      </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-        {visibleItems.map(item => (
-          <div key={item.slot} onClick={() => setSelectedItem(item)} style={{ cursor: 'pointer' }}>
-            <img src={`/${getImagePath(item.item_name)}`} alt={item.item_name} width={60} />
-            <div>{item.item_name}</div>
-            <div>수량: {item.qty}</div>
-          </div>
+      <div className="item-grid">
+        {filledSlots.map((item, index) => (
+          item ? (
+            <div
+              key={item.slot}
+              className={`item-slot ${selectedItem?.slot === item.slot ? 'selected' : ''}`}
+              onClick={() => setSelectedItem(item)}
+            >
+              <img src={`/${getImagePath(item.item_name)}`} alt={item.item_name} />
+              <div className="item-count">{item.qty}</div>
+            </div>
+          ) : (
+            <div key={`empty-${index}`} className="item-slot" />
+          )
         ))}
       </div>
 
+      <div className="slot-count">{visibleItems.length} / 20</div>
+
       {selectedItem && (
-        <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-          <img src={`/${getImagePath(selectedItem.item_name)}`} alt={selectedItem.item_name} width={80} />
-          <p>{selectedItem.item_name}</p>
-          <p>개수: {selectedItem.qty}</p>
-          {selectedItem.category === 'FERTILIZER' && (
-            <button onClick={handleUseFertilizer}>사용하기</button>
-          )}
-          {selectedItem.category === 'BASIC_FRUIT' && (
-            <button onClick={handlePlantSeed}>씨앗 심기</button>
-          )}
+        <div className="item-info" style={{ display: 'block' }}>
+          <div className="info-wrapper">
+            <div className="info-left">
+              <img src={`/${getImagePath(selectedItem.item_name)}`} alt={selectedItem.item_name} />
+            </div>
+            <div className="info-divider"></div>
+            <div className="info-right">
+              <strong className="info-title">{selectedItem.item_name}</strong>
+              <div className="item-count-text">개수: {selectedItem.qty}개</div>
+              {selectedItem.category === 'FERTILIZER' && (
+                <button className="plant-btn" onClick={handleUseFertilizer}>사용하기</button>
+              )}
+              {selectedItem.category === 'BASIC_FRUIT' && (
+                <button className="plant-btn" onClick={handlePlantSeed}>씨앗 심기</button>
+              )}
+            </div>
+          </div>
         </div>
       )}
+    </div>
     </div>
   )
 }

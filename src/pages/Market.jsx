@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import '../styles/Market.css'
 
 const getImagePath = (itemName) => {
   const map = {
@@ -29,29 +30,21 @@ function Market() {
   const [inventory, setInventory] = useState([])
   const [selectedItemTypeId, setSelectedItemTypeId] = useState('')
   const [qty, setQty] = useState(1)
-  const userId = 1 // 임시 userId
+  const userId = 1
 
   const fetchListings = async () => {
     try {
-      const res = await axios.get('/api/v1/market', {
-        headers: { 'x-user-id': userId }
-      })
+      const res = await axios.get('/api/v1/market', { headers: { 'x-user-id': userId } })
       setListings(res.data.data?.listings || [])
-    } catch (err) {
-      console.error(err)
-    }
+    } catch (err) { console.error(err) }
   }
 
   const fetchInventory = async () => {
     try {
-      const res = await axios.get('/api/v1/inventory', {
-        headers: { 'x-user-id': userId }
-      })
+      const res = await axios.get('/api/v1/inventory', { headers: { 'x-user-id': userId } })
       const items = res.data.data?.items || []
-      setInventory(items.filter(item => item.category === 'BASIC_FRUIT' || item.category === 'GOLD_FRUIT'))
-    } catch (err) {
-      console.error(err)
-    }
+      setInventory(items.filter(item => item.qty > 0 && (item.category === 'BASIC_FRUIT' || item.category === 'GOLD_FRUIT')))
+    } catch (err) { console.error(err) }
   }
 
   useEffect(() => {
@@ -63,60 +56,40 @@ function Market() {
     if (!selectedItemTypeId) return alert('과일을 선택해주세요')
     try {
       await axios.post('/api/v1/market/listings', {
-        itemTypeId: Number(selectedItemTypeId),
-        qty: Number(qty)
-      }, {
-        headers: { 'x-user-id': userId }
-      })
+        itemTypeId: Number(selectedItemTypeId), qty: Number(qty)
+      }, { headers: { 'x-user-id': userId } })
       alert('등록 완료!')
       setSelectedItemTypeId('')
       setQty(1)
       fetchListings()
       fetchInventory()
-    } catch (err) {
-      alert('등록 실패')
-      console.error(err)
-    }
+    } catch (err) { alert('등록 실패'); console.error(err) }
   }
 
   const handleExchange = async (postId) => {
     try {
-      await axios.post('/api/v1/market/exchange', {
-        postId
-      }, {
-        headers: { 'x-user-id': userId }
-      })
+      await axios.post('/api/v1/market/exchange', { postId }, { headers: { 'x-user-id': userId } })
       alert('교환 완료!')
       fetchListings()
       fetchInventory()
-    } catch (err) {
-      alert('교환 실패')
-      console.error(err)
-    }
+    } catch (err) { alert('교환 실패'); console.error(err) }
   }
 
   const handleCancel = async (postId) => {
     try {
-      await axios.post('/api/v1/market/cancel', {
-        postId
-      }, {
-        headers: { 'x-user-id': userId }
-      })
+      await axios.post('/api/v1/market/cancel', { postId }, { headers: { 'x-user-id': userId } })
       alert('취소 완료!')
       fetchListings()
       fetchInventory()
-    } catch (err) {
-      alert('취소 실패')
-      console.error(err)
-    }
+    } catch (err) { alert('취소 실패'); console.error(err) }
   }
 
   return (
-    <div>
-      <h1>🌿 그로우 마켓</h1>
+    <div className="market-container">
+      <h1 className="market-title">🌿 그로우 마켓</h1>
 
       {/* 과일 등록 폼 */}
-      <div style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
+      <div className="register-form">
         <h3>과일 등록</h3>
         <select value={selectedItemTypeId} onChange={e => setSelectedItemTypeId(e.target.value)}>
           <option value="">등록할 과일 선택</option>
@@ -132,33 +105,34 @@ function Market() {
           value={qty}
           onChange={e => setQty(e.target.value)}
           placeholder="수량"
-          style={{ marginLeft: '10px', width: '60px' }}
         />
-        <button onClick={handleRegister} style={{ marginLeft: '10px' }}>등록</button>
-        <p style={{ color: 'gray', fontSize: '12px' }}>
-          등록 후 30일이 지나면 자동 삭제됩니다. 황금 과일은 교환이 불가능합니다.
+        <button className="register-btn" onClick={handleRegister}>등록</button>
+        <p className="notice">
+          등록 후 30일이 지나면 자동 삭제됩니다.<br />
+          황금 과일은 교환이 불가능합니다.
         </p>
       </div>
 
       {/* 마켓 목록 */}
-      <div>
-        <h3>마켓 목록</h3>
+      <div className="item-list">
         {listings.length === 0 && <p>등록된 과일이 없습니다.</p>}
         {listings.map(item => (
-          <div key={item.post_id} style={{ border: '1px solid #eee', padding: '10px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <img src={`/${getImagePath(item.item_name)}`} alt={item.item_name} width={50} />
-            <div>
-              <div>{item.nickname || '알 수 없음'}</div>
-              <div>{item.item_name}</div>
-              <div style={{ color: 'gray', fontSize: '12px' }}>D-{item.dday}</div>
+          <div key={item.post_id} className="market-item">
+            <div className="item-left">
+              <img src={`/${getImagePath(item.item_name)}`} alt={item.item_name} />
+              <div>
+                <div className="nickname">{item.nickname || '알 수 없음'}</div>
+                <div className="subtext">{item.item_name}</div>
+                <div className="subtext d-day">D-{item.dday}</div>
+              </div>
             </div>
-            <div style={{ marginLeft: 'auto' }}>
+            <div className="item-right">
               {item.seller_id === userId ? (
-                <button onClick={() => handleCancel(item.post_id)}>등록 취소</button>
+                <button className="cancel-btn" onClick={() => handleCancel(item.post_id)}>등록 취소</button>
               ) : item.category !== 'GOLD_FRUIT' ? (
-                <button onClick={() => handleExchange(item.post_id)}>교환 요청</button>
+                <button className="exchange-btn" onClick={() => handleExchange(item.post_id)}>교환 요청</button>
               ) : (
-                <span style={{ color: 'gray', fontSize: '12px' }}>교환 불가</span>
+                <span className="no-exchange">교환 불가</span>
               )}
             </div>
           </div>

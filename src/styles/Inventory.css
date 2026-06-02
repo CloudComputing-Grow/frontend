@@ -1,0 +1,145 @@
+body {
+  background-color: #fff;
+}
+
+.inventory-container {
+  position: relative;
+  margin: 40px auto;
+  top: 20px;
+  background-color: #d1bb97;
+  border-radius: 20px;
+  width: 320px;
+  padding: 20px;
+  min-height: 300px;
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.tab-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+
+.tab-btn {
+  width: 130px;
+  padding: 6px 0;
+  font-weight: bold;
+  background-color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background-color: #a7855f;
+  color: white;
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 50px);
+  gap: 10px;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.item-slot {
+  background-color: #6f5a3d;
+  border-radius: 8px;
+  position: relative;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-slot.selected {
+  outline: 3px solid aqua;
+}
+
+.item-slot img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.item-count {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 12px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
+}
+
+.slot-count {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.item-info {
+  background-color: #f3e6d0;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.info-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.info-left img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.info-divider {
+  width: 1px;
+  height: 80px;
+  background-color: black;
+  margin: 0 12px;
+}
+
+.info-right {
+  flex: 1;
+}
+
+.info-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.info-desc {
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 5px;
+}
+
+.plant-btn {
+  padding: 4px 8px;
+  background-color: #f5f5f5;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.item-count-text {
+  font-size: 14px;
+}
