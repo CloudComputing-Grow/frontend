@@ -89,7 +89,7 @@ export default function MyPage() {
                             {data.badgeType && (
                                 <img
                                     className="badge-overlay"
-                                    src={`/images/badge/${data.badgeType}.png`}
+                                    src={data.badgeType === 'gold' ? '/gold.png' : '/silver.png'}
                                     alt="휘장"
                                 />
                             )}
