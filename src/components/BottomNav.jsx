@@ -4,7 +4,7 @@ function BottomNav() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const hideOn = ['/login', '/register']
+  const hideOn = ['/auth/login', '/auth/signup']
   if (hideOn.includes(location.pathname)) return null
 
   return (
@@ -21,7 +21,7 @@ function BottomNav() {
         <span>👥</span>
         <span>커뮤니티</span>
       </a>
-      <a onClick={() => navigate('/mypage')}>
+      <a onClick={() => navigate('/user/mypage')}>
         <span>👤</span>
         <span>마이페이지</span>
       </a>

@@ -1,0 +1,180 @@
+.mypage-wrapper {
+    position: relative;
+    max-width: 430px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #ffffff;
+    margin: 0 auto;
+    padding: 20px 16px 140px;
+    color: #000;
+}
+
+body {
+    background-color: #f7f7f7;
+}
+
+.mypage-container {
+    padding: 20px;
+    padding-bottom: 90px;
+    color: #000;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.profile-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: transparent;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.profile-img svg {
+    width: 80px;
+    height: 80px;
+}
+
+.badge-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.nickname-box {
+    margin-left: 20px;
+}
+
+.nickname {
+    font-weight: 700;
+    font-size: 24px;
+    margin: 0;
+}
+
+.level {
+    font-size: 16px;
+    margin: 4px 0 0;
+}
+
+.mission-section {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.mission-title {
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0 0 8px;
+    text-align: left;
+}
+
+.mission-progress-text {
+    font-size: 16px;
+    margin: 0 0 8px;
+    text-align: left;
+}
+
+.progress-bar {
+    width: 100%;
+    background: #eee;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 12px;
+    background: #267c13;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.menu-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: #000;
+    background-color: #fff;
+}
+
+.menu-buttons button {
+    width: 100%;
+    padding: 12px 0;
+    border: 1px solid #000;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    background: white;
+    cursor: pointer;
+    color: #000;
+}
+
+.personal-section {
+    margin-top: 40px;
+    text-align: left;
+}
+
+.personal-title {
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0 0 8px;
+    text-align: left;
+}
+
+.email-text {
+    font-size: 16px;
+    margin: 0 0 12px;
+}
+
+.small-buttons-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+    color: #000;
+}
+
+.small-buttons-vertical button {
+    width: 180px;
+    padding: 8px 0;
+    font-size: 16px;
+    border: 1px solid #000;
+    border-radius: 8px;
+    text-align: center;
+    background: white;
+    cursor: pointer;
+    color: #000;
+}
+
+.logout-withdraw {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+.logout-withdraw span {
+    font-size: 16px;
+    color: #000;
+    cursor: pointer;
+}

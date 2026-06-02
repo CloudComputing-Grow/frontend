@@ -1,75 +1,122 @@
-import { useState } from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import api from '../api/axiosInstance';
+import '../styles/auth.css';
 
-function Register() {
-  const [nickname, setNickname] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
-  const [error, setError] = useState('')
-  const navigate = useNavigate()
+export default function Register() {
+  const [form, setForm] = useState({
+    nickname: '',
+    email: '',
+    password: '',
+    passwordConfirm: '',
+    agree: false
+  });
 
-  const handleRegister = async (e) => {
-    e.preventDefault()
-    if (password !== passwordConfirm) {
-      setError('비밀번호가 일치하지 않습니다.')
-      return
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setForm({
+      ...form,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (!form.agree) {
+      setError('이용약관에 동의해야 합니다.');
+      return;
     }
-    if (password.length < 8) {
-      setError('비밀번호는 8자 이상이어야 합니다.')
-      return
-    }
+
     try {
-      await axios.post('/auth/signup', { nickname, email, password })
-      alert('회원가입 완료! 로그인해주세요.')
-      navigate('/login')
+      const res = await api.post('/auth/signup', {
+        email: form.email,
+        nickname: form.nickname,
+        password: form.password,
+        passwordConfirm: form.passwordConfirm
+      });
+
+      localStorage.setItem('accessToken', res.data.data.accessToken);
+
+      window.location.href = '/register-success';
     } catch (err) {
-      setError(err.response?.data?.message || '회원가입에 실패했습니다.')
+      setError(err.response?.data?.message || '회원가입 중 오류가 발생했습니다.');
     }
-  }
+  };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '100px auto', textAlign: 'center' }}>
-      <div style={{ fontSize: '22px', marginBottom: '30px' }}>
-        당신의 정원을 가꿔 보세요.
-      </div>
-      <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        <input
-          type="text"
-          placeholder="닉네임"
-          value={nickname}
-          onChange={e => setNickname(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="이메일 주소"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="비밀번호 (8자 이상)"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-          minLength={8}
-        />
-        <input
-          type="password"
-          placeholder="비밀번호 확인"
-          value={passwordConfirm}
-          onChange={e => setPasswordConfirm(e.target.value)}
-          required
-        />
-        {error && <div style={{ color: 'red', fontSize: '14px' }}>{error}</div>}
-        <button type="submit">가입하기</button>
-        <a href="/login">로그인</a>
-      </form>
-    </div>
-  )
-}
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="register-title">당신의 정원을 가꿔 보세요.</div>
 
-export default Register
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <label>닉네임</label>
+          <input
+            type="text"
+            name="nickname"
+            placeholder="닉네임"
+            value={form.nickname}
+            onChange={handleChange}
+            onFocus={() => setForm({ ...form, nickname: '' })}
+            required
+          />
+
+          <label>이메일</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="이메일 주소"
+            value={form.email}
+            onChange={handleChange}
+            onFocus={() => setForm({ ...form, email: '' })}
+            required
+          />
+
+          <label>비밀번호</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="비밀번호 (8자 이상)"
+            value={form.password}
+            onChange={handleChange}
+            minLength={8}
+            onFocus={() => setForm({ ...form, password: '' })}
+            required
+          />
+
+          <label>비밀번호 확인</label>
+          <input
+            type="password"
+            name="passwordConfirm"
+            placeholder="비밀번호 확인"
+            value={form.passwordConfirm}
+            onChange={handleChange}
+            onFocus={() => setForm({ ...form, passwordConfirm: '' })}
+            required
+          />
+
+          {error && <div className="error-message">{error}</div>}
+
+          <div className="checkbox-row">
+            <input
+              type="checkbox"
+              name="agree"
+              checked={form.agree}
+              onChange={handleChange}
+            />
+            <label>이용약관에 동의합니다.</label>
+          </div>
+
+          <button type="submit" className="register-btn">가입하기</button>
+        </form>
+
+        <div className="center-link">
+          <a href="/auth/login">로그인</a>
+        </div>
+      </div>
+    </div>
+  );
+}
