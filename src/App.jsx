@@ -18,6 +18,8 @@ import LastComplete from './components/LastComplete';
 import DiaryWrite from './pages/DiaryWrite'
 import DiaryList from './pages/DiaryList'
 import DiaryDetail from './pages/DiaryDetail'
+import AchievementPage from './pages/AchievementPage'
+
 
 function App() {
   return (
@@ -36,6 +38,9 @@ function App() {
         {/* 개인정보 수정 */}
         <Route path="/user/change-email" element={<ChangeEmail />} />
         <Route path="/user/change-password" element={<ChangePassword />}  />
+
+        {/* 휘장/업적 */}
+        <Route path="/achievements" element={<AchievementPage />} />
         
         <Route path="/home" element={<Home />} />
         <Route path="/collection" element={<Collection />} />
