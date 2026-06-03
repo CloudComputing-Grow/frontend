@@ -15,6 +15,9 @@ import MissionDashboard from './components/MissionDashboard';
 import MissionDetail from './components/MissionDetail';
 import AdminCertManager from './components/AdminCertManager';
 import LastComplete from './components/LastComplete';
+import DiaryWrite from './pages/DiaryWrite'
+import DiaryList from './pages/DiaryList'
+import DiaryDetail from './pages/DiaryDetail'
 
 function App() {
   return (
@@ -44,6 +47,9 @@ function App() {
         <Route path="/admin/certs" element={<AdminCertManager />} />
         <Route path="/api/v1/admin/certs" element={<AdminCertManager />} />
         <Route path="/last-complete" element={<LastComplete />} />
+        <Route path="/dashboard/diary/:missionExecutionId" element={<DiaryWrite />} />
+        <Route path="/diary" element={<DiaryList />} />
+        <Route path="/diary/:diaryId" element={<DiaryDetail />} />
       </Routes>
       <BottomNav />
     </BrowserRouter>
