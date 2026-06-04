@@ -19,6 +19,7 @@ function Home() {
   const [progress, setProgress] = useState(null)
   const [user, setUser] = useState(null)
   const [showPopup, setShowPopup] = useState(false)
+  const [harvesting, setHarvesting] = useState(false)
   const navigate = useNavigate()
 
   const token = localStorage.getItem('token')
@@ -48,6 +49,25 @@ function Home() {
       .catch(err => console.error(err))
   }, [])
 
+  // 식물 수확
+  const handleHarvest = async () => {
+    if (!garden?.growthStatusId) return
+    setHarvesting(true)
+    try {
+      await axios.post('/api/v1/growth-diary/garden/harvest',
+        { growthStatusId: garden.growthStatusId },
+        { headers }
+      )
+      alert('🎉 수확 완료! 과일이 인벤토리에 추가됐어요.')
+      const res = await axios.get('/api/v1/growth-diary/garden', { headers })
+      setGarden(res.data)
+    } catch (err) {
+      console.error(err)
+      alert('수확에 실패했습니다.')
+    } finally {
+      setHarvesting(false)
+    }
+  }
   const hasPlanted = !!garden?.growthStatusId
   const treeImage = garden ? getTreeImage(garden.growthRate, garden.itemTypeId) : null
 
@@ -82,6 +102,17 @@ function Home() {
             style={{ width: '131px', height: '46px', background: '#fff', borderRadius: '10px', border: '2px solid #000', fontWeight: 700, fontSize: '18px', cursor: 'pointer' }}
           >👜 인벤토리</button>
         </div>
+
+        {/* 수확 버튼 */}
+        {garden?.growthRate >= 100 && (
+          <div style={{ position: 'absolute', top: '590px', left: '42px', width: '318px', display: 'flex', justifyContent: 'center' }}>
+            <button
+              onClick={handleHarvest}
+              disabled={harvesting}
+              style={{ width: '298px', height: '42px', background: '#4CAF50', color: '#fff', borderRadius: '20px', fontWeight: 700, fontSize: '20px', border: 'none', cursor: 'pointer' }}
+            >{harvesting ? '수확 중...' : '🍎 수확하기'}</button>
+          </div>
+        )}
 
         {/* 미션 상태 박스 */}
         <div style={{

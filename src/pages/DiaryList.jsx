@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../api/axiosInstance'
+import axios from 'axios'
 
 export default function DiaryList() {
   const [diaries, setDiaries] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
+  const token = localStorage.getItem('token')
+  const headers = { Authorization: `Bearer ${token}` }
+
   useEffect(() => {
-    api.get('/api/v1/growth-diary/diaries')
-      .then(res => {
-        setDiaries(res.data.data || [])
-      })
+    axios.get('/api/v1/growth-diary/diaries', { headers })
+      .then(res => setDiaries(res.data.data || []))
       .catch(err => console.error(err))
       .finally(() => setLoading(false))
   }, [])
@@ -21,28 +22,13 @@ export default function DiaryList() {
   return (
     <div style={{ maxWidth: '430px', margin: '0 auto', padding: '20px', paddingBottom: '80px' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>📔 나의 일기</h2>
-
       {diaries.length === 0 ? (
-        <div style={{ textAlign: 'center', color: '#888', marginTop: '50px' }}>
-          아직 작성한 일기가 없어요.
-        </div>
+        <div style={{ textAlign: 'center', color: '#888', marginTop: '50px' }}>아직 작성한 일기가 없어요.</div>
       ) : (
         diaries.map(diary => (
-          <div
-            key={diary.diaryId}
-            onClick={() => navigate(`/diary/${diary.diaryId}`)}
-            style={{
-              background: '#fff',
-              border: '1px solid #ddd',
-              borderRadius: '10px',
-              padding: '15px',
-              marginBottom: '12px',
-              cursor: 'pointer'
-            }}
-          >
-            <div style={{ fontWeight: 700, fontSize: '16px', marginBottom: '6px' }}>
-              {diary.title}
-            </div>
+          <div key={diary.diaryId} onClick={() => navigate(`/diary/${diary.diaryId}`)}
+            style={{ background: '#fff', border: '1px solid #ddd', borderRadius: '10px', padding: '15px', marginBottom: '12px', cursor: 'pointer' }}>
+            <div style={{ fontWeight: 700, fontSize: '16px', marginBottom: '6px' }}>{diary.title}</div>
             <div style={{ fontSize: '13px', color: '#888', marginBottom: '8px' }}>
               {new Date(diary.createdAt).toLocaleDateString('ko-KR')}
             </div>
