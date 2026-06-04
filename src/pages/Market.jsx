@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../api/axiosInstance'
 import '../styles/Market.css'
 
 const getImagePath = (itemName) => {
@@ -30,18 +30,20 @@ function Market() {
   const [inventory, setInventory] = useState([])
   const [selectedItemTypeId, setSelectedItemTypeId] = useState('')
   const [qty, setQty] = useState(1)
-  const userId = 1
+  // JWT 토큰에서 userId 추출
+  const token = localStorage.getItem('accessToken')
+  const userId = token ? JSON.parse(atob(token.split('.')[1])).userId : null
 
   const fetchListings = async () => {
     try {
-      const res = await axios.get('/api/v1/market', { headers: { 'x-user-id': userId } })
+      const res = await api.get('/api/v1/market', {})
       setListings(res.data.data?.listings || [])
     } catch (err) { console.error(err) }
   }
 
   const fetchInventory = async () => {
     try {
-      const res = await axios.get('/api/v1/inventory', { headers: { 'x-user-id': userId } })
+      const res = await api.get('/api/v1/inventory', {})
       const items = res.data.data?.items || []
       setInventory(items.filter(item => item.qty > 0 && (item.category === 'BASIC_FRUIT' || item.category === 'GOLD_FRUIT')))
     } catch (err) { console.error(err) }
@@ -55,9 +57,9 @@ function Market() {
   const handleRegister = async () => {
     if (!selectedItemTypeId) return alert('과일을 선택해주세요')
     try {
-      await axios.post('/api/v1/market/listings', {
+      await api.post('/api/v1/market/listings', {
         itemTypeId: Number(selectedItemTypeId), qty: Number(qty)
-      }, { headers: { 'x-user-id': userId } })
+      }, {})
       alert('등록 완료!')
       setSelectedItemTypeId('')
       setQty(1)
@@ -68,7 +70,7 @@ function Market() {
 
   const handleExchange = async (postId) => {
     try {
-      await axios.post('/api/v1/market/exchange', { postId }, { headers: { 'x-user-id': userId } })
+      await api.post('/api/v1/market/exchange', { postId }, {})
       alert('교환 완료!')
       fetchListings()
       fetchInventory()
@@ -77,7 +79,7 @@ function Market() {
 
   const handleCancel = async (postId) => {
     try {
-      await axios.post('/api/v1/market/cancel', { postId }, { headers: { 'x-user-id': userId } })
+      await api.post('/api/v1/market/cancel', { postId }, {})
       alert('취소 완료!')
       fetchListings()
       fetchInventory()
