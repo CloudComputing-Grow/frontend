@@ -82,7 +82,7 @@ function AchievementPage() {
   const items = data.items || [];
 
   const filteredItems = items.filter(
-    (item) => item.category === category && item.achieved
+    (item) => item.category === category && item.isAchieved
   );
 
   const currentItem = filteredItems[currentIndex];
