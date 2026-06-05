@@ -163,29 +163,7 @@ export default function MissionDashboard() {
         })}
 
       {/* 팝업 모달 1: 비료 획득 알림 모달 */}
-      {showFertilizerModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <p>
-              <strong>미션 인증이 완료되었어요!</strong>
-              <br />
-              비료를 획득하셨습니다!
-            </p>
-            <img src="/img/fertilizer.png" alt="fertilizer" style={{ width: '150px', height: '150px' }} />
-            <p>
-              비료를 통해
-              <br />
-              나무를 성장시켜 보세요!
-            </p>
-          </div>
-          <div className="modal-content2">
-            {/* [수정] <a> 태그를 <Link>로 변경하되, 만약 다른 서비스(예: 다이어리 서비스)의 라우트 주소라면 그대로 라우팅이 먹힘 */}
-            <Link to={`/dashboard/diary/${latestMissionExecutionId}`}>  
-              <button className="write-diary-btn">일기 작성</button>
-            </Link>
-          </div>
-        </div>
-      )}
+      {showFertilizerModal && (                                                                               <div className="modal">                                                                                 <div className="modal-content">                                                                         <p>                                                                                                     <strong>미션 인증이 완료되었어요!</strong>                                                            <br />                                                                                                비료를 획득하셨습니다!                                                                              </p>                                                                                                  <img src="/img/fertilizer.png" alt="fertilizer" style={{ width: '150px', height: '150px', objectFit: 'contain' }} />                                                                                        <p style={{ marginBottom: '10px' }}>                                                                    비료를 통해                                                                                           <br />                                                                                                나무를 성장시켜 보세요!                                                                             </p>                                                                                                                                                                                                        <div className="modal-content2">                                                                        <Link to={`/dashboard/diary/${latestMissionExecutionId}`} style={{ width: '100%', display: 'block' }}>                                                                                                        <button className="write-diary-btn">일기 작성</button>                                              </Link>                                                                                             </div>                                                                                              </div>                                                                                              </div>                                                                                              )}
 
       {/* 팝업 모달 2: 단계 완료 후 선택 옵션 모달 */}
       {showLevelOptionModal && (
@@ -274,38 +252,47 @@ const styles = `
   .modal {
     position: fixed;
     top: 0; left: 0;
-    width: 100%; height: 100%;
+    width: 100vw;
+    height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* 기존 0에서 가시성 보장을 위해 1000 레이어로 보정 */
-    background: rgba(0,0,0,0.4); /* 백드롭 가시성 연출용 */
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5); /* 백드롭 가시성 향상 */
   }
   .modal-content {
     background: white;
-    padding: 20px;
-    border-radius: 12px;
+    padding: 24px;
+    border-radius: 16px;
     text-align: center;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center;     /* 가운데 정렬 */
+    width: 280px;            /* 모달 카드의 너비 지정 */
+    max-width: 90%;
   }
   .modal-content2 {
-    position: static;
-    margin-top: 10px;
-    width: 100%
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
   .write-diary-btn {
     background: #4CAF50;
     color: white;
-    padding: 12px 20px;
-    margin-top: 15px;
+    padding: 12px 0;         /* 좌우 패딩 대신 너비 100% 분배 */
     border: none;
     border-radius: 8px;
     font-size: 16px;
     font-weight: bold;
-    width: 200px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    width: 100%;             /* 부모인 Link/modal-content2 너비에 맞춤 */
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    transition: background 0.2s;
+  }
+  .write-diary-btn:hover {
+    background: #45a049;
   }
   .font {
     font-size: 18px;
