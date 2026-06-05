@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 // [수정] react-router-dom에서 페이지 이동을 위한 훅과 컴포넌트 가져오기
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ export default function MissionDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/v1/missions');
+      const response = await api.get('/api/v1/missions');
       if (response.data.success) {
         const { data } = response.data;
         setMissions(data.missions || []);
@@ -47,7 +47,7 @@ export default function MissionDashboard() {
   // 2. 미션 완료 확정 요청 (POST /api/v1/missions/confirm/:mission_execution_id)
   const handleConfirmMission = async (executionId) => {
     try {
-      const response = await axios.post(`/api/v1/missions/confirm/${executionId}`);
+      const response = await api.post(`/api/v1/missions/confirm/${executionId}`);
       if (response.data.success) {
         await fetchDashboardData();
       }
@@ -60,7 +60,7 @@ export default function MissionDashboard() {
   // 3. 레벨 옵션 선택 요청 (POST /api/v1/missions/level-option)
   const handleLevelOption = async (option) => {
     try {
-      const response = await axios.post('/api/v1/missions/level-option', { option });
+      const response = await api.post('/api/v1/missions/level-option', { option });
       if (response.data.success) {
         if (response.data.redirectUrl) {
           // [수정] 외부 링크 주소가 아니라 우리 프론트엔드 라우트 주소라면 navigate를 사용

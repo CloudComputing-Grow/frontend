@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 
 export default function AdminCertManager() {
   // 백엔드 응답 명세 데이터 구조 상태 정의
@@ -12,7 +12,7 @@ export default function AdminCertManager() {
   const fetchAdminCerts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/v1/admin/certs');
+      const response = await api.get('/api/v1/admin/certs');
       if (response.data.success) {
         const { data } = response.data;
         setCerts(data.certs || []);
@@ -35,7 +35,7 @@ export default function AdminCertManager() {
     if (!window.confirm('이 미션을 승인하시겠습니까?')) return;
     
     try {
-      const response = await axios.post(`/api/v1/admin/certs/${certificationId}/approve`);
+      const response = await api.post(`/api/v1/admin/certs/${certificationId}/approve`);
       if (response.data.success) {
         alert(response.data.message || '인증 승인이 완료되었습니다.');
         await fetchAdminCerts(); // 목록 갱신 (리다이렉트 흐름 대체)
@@ -51,7 +51,7 @@ export default function AdminCertManager() {
     if (!window.confirm('인증을 취소하고 지급된 보상을 회수하시겠습니까?')) return;
 
     try {
-      const response = await axios.post(`/api/v1/admin/certs/${certificationId}/cancel`);
+      const response = await api.post(`/api/v1/admin/certs/${certificationId}/cancel`);
       if (response.data.success) {
         alert(response.data.message || '인증 취소 및 보상 회수가 완료되었습니다.');
         await fetchAdminCerts(); // 목록 갱신

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axiosInstance';
 // [수정] react-router-dom에서 필요한 훅과 컴포넌트 가져오기
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ export default function MissionDetail() {
       const missionId = searchParams.get('missionId');
       const url = missionId ? `/api/v1/missions/detail?missionId=${missionId}` : '/api/v1/missions/detail';
       
-      const response = await axios.get(url);
+      const response = await api.get(url);
       if (response.data.success) {
         const { data } = response.data;
         setMission(data.mission || null);
@@ -61,7 +61,7 @@ export default function MissionDetail() {
       formData.append('missionId', mission.mission_id);
       formData.append('photo', selectedFile); 
 
-      const response = await axios.post('/api/v1/missions/submit', formData, {
+      const response = await api.post('/api/v1/missions/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
