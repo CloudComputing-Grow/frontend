@@ -15,6 +15,11 @@ import MissionDashboard from './components/MissionDashboard';
 import MissionDetail from './components/MissionDetail';
 import AdminCertManager from './components/AdminCertManager';
 import LastComplete from './components/LastComplete';
+import DiaryWrite from './pages/DiaryWrite'
+import DiaryList from './pages/DiaryList'
+import DiaryDetail from './pages/DiaryDetail'
+import AchievementPage from './pages/AchievementPage'
+
 
 function App() {
   return (
@@ -33,6 +38,9 @@ function App() {
         {/* 개인정보 수정 */}
         <Route path="/user/change-email" element={<ChangeEmail />} />
         <Route path="/user/change-password" element={<ChangePassword />}  />
+
+        {/* 휘장/업적 */}
+        <Route path="/achievements" element={<AchievementPage />} />
         
         <Route path="/home" element={<Home />} />
         <Route path="/collection" element={<Collection />} />
@@ -44,6 +52,9 @@ function App() {
         <Route path="/admin/certs" element={<AdminCertManager />} />
         <Route path="/api/v1/admin/certs" element={<AdminCertManager />} />
         <Route path="/last-complete" element={<LastComplete />} />
+        <Route path="/dashboard/diary/:missionExecutionId" element={<DiaryWrite />} />
+        <Route path="/diary" element={<DiaryList />} />
+        <Route path="/diary/:diaryId" element={<DiaryDetail />} />
       </Routes>
       <BottomNav />
     </BrowserRouter>
