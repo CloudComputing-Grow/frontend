@@ -27,7 +27,7 @@ export default function Login() {
             localStorage.setItem('accessToken', res.data.data.accessToken);
             localStorage.setItem('refreshToken', res.data.data.refreshToken);
 
-            window.location.href = '/user/mypage';
+            window.location.href = '/home';
         } catch (err) {
             setError(err.response?.data?.message || '로그인 중 오류가 발생했습니다.');
         }
