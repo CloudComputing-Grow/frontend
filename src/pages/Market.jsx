@@ -30,9 +30,10 @@ function Market() {
   const [inventory, setInventory] = useState([])
   const [selectedItemTypeId, setSelectedItemTypeId] = useState('')
   const [qty, setQty] = useState(1)
-  // JWT 토큰에서 userId 추출
+  const [modal, setModal] = useState({ show: false, message: '', isSuccess: false })
+
   const token = localStorage.getItem('accessToken')
-  const userId = token ? JSON.parse(atob(token.split('.')[1])).userId : null
+  const userId = token ? Number(JSON.parse(atob(token.split('.')[1])).user_Id) : null
 
   const fetchListings = async () => {
     try {
@@ -71,10 +72,20 @@ function Market() {
   const handleExchange = async (postId) => {
     try {
       await api.post('/api/v1/market/exchange', { postId }, {})
-      alert('교환 완료!')
+      setModal({ show: true, message: '교환이 완료됐어요! ', isSuccess: true })
       fetchListings()
       fetchInventory()
-    } catch (err) { alert('교환 실패'); console.error(err) }
+    } catch (err) {
+      const code = err.response?.data?.error_code
+      const messages = {
+        EXCEEDED_DAILY_LIMIT: '오늘 교환 횟수(3번)를 모두 사용했습니다.',
+        INVALID_POST: '이미 다른 사람이 가져간 과일입니다.',
+        INV_FULL: '인벤토리가 가득 찼습니다.',
+        LIMIT_EXCEEDED: '해당 과일을 더 이상 보유할 수 없습니다.',
+      }
+      setModal({ show: true, message: messages[code] || '서버 오류가 발생했습니다.', isSuccess: false })
+      console.error(err)
+    }
   }
 
   const handleCancel = async (postId) => {
@@ -88,9 +99,35 @@ function Market() {
 
   return (
     <div className="market-container">
+
+      {modal.show && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', zIndex: 9999
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: '16px', padding: '32px 24px',
+            textAlign: 'center', minWidth: '260px', boxShadow: '0 8px 32px rgba(0,0,0,0.18)'
+          }}>
+            <div style={{ fontSize: '2rem', marginBottom: '12px' }}>
+              {modal.isSuccess ? '🎉' : '😢'}
+            </div>
+            <p style={{ fontSize: '1rem', marginBottom: '20px', color: '#333' }}>
+              {modal.message}
+            </p>
+            <button onClick={() => setModal({ ...modal, show: false })} style={{
+              background: '#4caf50', color: '#fff', border: 'none',
+              borderRadius: '8px', padding: '10px 28px', fontSize: '1rem', cursor: 'pointer'
+            }}>
+              확인
+            </button>
+          </div>
+        </div>
+      )}
+
       <h1 className="market-title">🌿 그로우 마켓</h1>
 
-      {/* 과일 등록 폼 */}
       <div className="register-form">
         <h3>과일 등록</h3>
         <select value={selectedItemTypeId} onChange={e => setSelectedItemTypeId(e.target.value)}>
@@ -115,7 +152,6 @@ function Market() {
         </p>
       </div>
 
-      {/* 마켓 목록 */}
       <div className="item-list">
         {listings.length === 0 && <p>등록된 과일이 없습니다.</p>}
         {listings.map(item => (
