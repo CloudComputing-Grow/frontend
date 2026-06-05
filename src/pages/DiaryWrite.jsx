@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api/axiosInstance'
+import '../styles/diary.css'
 
 const EMOTION_OPTIONS = ['기쁨', '뿌듯함', '설렘', '평온', '슬픔', '불안', '화남', '지침']
 
@@ -11,9 +12,6 @@ export default function DiaryWrite() {
   const [content, setContent] = useState('')
   const [emotions, setEmotions] = useState([])
   const [loading, setLoading] = useState(false)
-
-  const token = localStorage.getItem('token')
-  const headers = { Authorization: `Bearer ${token}` }
 
   const toggleEmotion = (emotion) => {
     setEmotions(prev =>
@@ -28,10 +26,12 @@ export default function DiaryWrite() {
     }
     setLoading(true)
     try {
-      await axios.post('/api/v1/growth-diary/diaries',
-        { missionExecutionId: Number(missionExecutionId), title, content, emotions },
-        { headers }
-      )
+      await api.post('/api/v1/growth-diary/diaries', {
+        missionExecutionId: Number(missionExecutionId),
+        title,
+        content,
+        emotions
+      })
       alert('일기가 작성되었습니다!')
       navigate('/diary')
     } catch (err) {

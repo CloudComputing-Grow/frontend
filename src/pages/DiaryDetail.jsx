@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api/axiosInstance'
+import '../styles/diary.css'
 
 export default function DiaryDetail() {
   const { diaryId } = useParams()
@@ -8,11 +9,8 @@ export default function DiaryDetail() {
   const [diary, setDiary] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const token = localStorage.getItem('token')
-  const headers = { Authorization: `Bearer ${token}` }
-
   useEffect(() => {
-    axios.get(`/api/v1/growth-diary/diaries/${diaryId}`, { headers })
+    api.get(`/api/v1/growth-diary/diaries/${diaryId}`)
       .then(res => setDiary(res.data.data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false))

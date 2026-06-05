@@ -19,6 +19,10 @@ import DiaryWrite from './pages/DiaryWrite'
 import DiaryList from './pages/DiaryList'
 import DiaryDetail from './pages/DiaryDetail'
 import AchievementPage from './pages/AchievementPage'
+import Community from './pages/Community'
+import PostDetail from './pages/PostDetail'
+import PostWrite from './pages/PostWrite'
+import Scrap from './pages/Scrap'
 
 
 function App() {
@@ -55,6 +59,12 @@ function App() {
         <Route path="/dashboard/diary/:missionExecutionId" element={<DiaryWrite />} />
         <Route path="/diary" element={<DiaryList />} />
         <Route path="/diary/:diaryId" element={<DiaryDetail />} />
+
+        {/* 커뮤니티 */}
+        <Route path="/community" element={<Community />} />
+        <Route path="/community/posts/:postId" element={<PostDetail />} />
+        <Route path="/community/write" element={<PostWrite />} />
+        <Route path="/scrap" element={<Scrap />} />
       </Routes>
       <BottomNav />
     </BrowserRouter>
