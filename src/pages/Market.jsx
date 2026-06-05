@@ -33,7 +33,7 @@ function Market() {
   const [modal, setModal] = useState({ show: false, message: '', isSuccess: false })
 
   const token = localStorage.getItem('accessToken')
-  const userId = token ? JSON.parse(atob(token.split('.')[1])).userId : null
+  const userId = token ? Number(JSON.parse(atob(token.split('.')[1])).userId) : null
 
   const fetchListings = async () => {
     try {
