@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../api/axiosInstance'
 import { useNavigate } from 'react-router-dom'
 
 // 성장률에 따른 나무 이미지
@@ -22,12 +22,9 @@ function Home() {
   const [harvesting, setHarvesting] = useState(false)
   const navigate = useNavigate()
 
-  const token = localStorage.getItem('token')
-  const headers = { Authorization: `Bearer ${token}` }
-
   useEffect(() => {
     // 정원 상태 조회
-    axios.get('/api/v1/growth-diary/garden', { headers })
+    api.get('/api/v1/growth-diary/garden')
       .then(res => {
         const data = res.data
         setGarden(data)
@@ -39,12 +36,12 @@ function Home() {
       })
 
     // 미션 진행상황 조회
-    axios.get('/api/v1/growth-diary/progress', { headers })
+    api.get('/api/v1/growth-diary/progress')
       .then(res => setProgress(res.data))
       .catch(err => console.error(err))
 
     // 유저 정보 조회
-    axios.get('/user/mypage', { headers })
+    api.get('/user/mypage')
       .then(res => setUser(res.data))
       .catch(err => console.error(err))
   }, [])
@@ -54,12 +51,11 @@ function Home() {
     if (!garden?.growthStatusId) return
     setHarvesting(true)
     try {
-      await axios.post('/api/v1/growth-diary/garden/harvest',
-        { growthStatusId: garden.growthStatusId },
-        { headers }
+      await api.post('/api/v1/growth-diary/garden/harvest',
+        { growthStatusId: garden.growthStatusId }
       )
       alert('🎉 수확 완료! 과일이 인벤토리에 추가됐어요.')
-      const res = await axios.get('/api/v1/growth-diary/garden', { headers })
+      const res = await api.get('/api/v1/growth-diary/garden')
       setGarden(res.data)
     } catch (err) {
       console.error(err)
