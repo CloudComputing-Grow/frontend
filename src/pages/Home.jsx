@@ -2,16 +2,35 @@ import { useState, useEffect } from 'react'
 import api from '../api/axiosInstance'
 import { useNavigate } from 'react-router-dom'
 
-// 성장률에 따른 나무 이미지
+// itemTypeId → 과일 이름 매핑
+const itemTypeToName = {
+  2: 'apple', 3: 'gold_apple',
+  4: 'cherry', 5: 'gold_cherry',
+  6: 'grape', 7: 'gold_grape',
+  8: 'grapefruit', 9: 'gold_grapefruit',
+  10: 'lemon', 11: 'gold_lemon',
+  12: 'mango', 13: 'gold_mango',
+  14: 'orange', 15: 'gold_orange',
+  16: 'peach', 17: 'gold_peach',
+}
+
+// 성장률 + 과일 종류에 따른 나무 이미지
 const getTreeImage = (growthRate, itemTypeId) => {
-  if (!itemTypeId) return null
+  if (itemTypeId === null || itemTypeId === undefined) return null
+
   const step = growthRate >= 100 ? 5
     : growthRate >= 80 ? 4
     : growthRate >= 60 ? 3
     : growthRate >= 40 ? 2
     : growthRate >= 20 ? 1
     : 0
-  return step === 0 ? null : `/img/tree_${step}.png`
+
+  if (step === 0) return `/images/tree/default_0.png`
+  if (step <= 3) return `/images/tree/stage_${step}.png`
+
+  const fruitName = itemTypeToName[itemTypeId]
+  if (!fruitName) return `/images/tree/stage_${step}.png`
+  return `/images/tree/${fruitName}_${step}.png`
 }
 
 function Home() {
@@ -64,7 +83,7 @@ function Home() {
       setHarvesting(false)
     }
   }
-  
+
   const hasPlanted = !!garden?.growthStatusId
   const treeImage = garden ? getTreeImage(garden.growthRate, garden.itemTypeId) : null
 
