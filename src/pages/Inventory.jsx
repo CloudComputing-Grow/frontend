@@ -63,9 +63,17 @@ function Inventory() {
 
   const handlePlantSeed = async () => {
     try {
+      // 1. 인벤토리 씨앗 차감
       await api.post('/api/v1/inventory/consume-seed', {
         itemTypeId: selectedItem.type
       })
+
+      // 2. growth-diary DB 저장
+      await api.post('/api/v1/growth-diary/garden/plant', {
+        itemTypeId: selectedItem.type,
+        level: 1
+      })
+
       alert('씨앗 심기 완료!')
       setSelectedItem(null)
       fetchInventory()

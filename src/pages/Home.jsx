@@ -26,9 +26,9 @@ function Home() {
     // 정원 상태 조회
     api.get('/api/v1/growth-diary/garden')
       .then(res => {
-        const data = res.data
-        setGarden(data)
-        if (!data.growthStatusId) setShowPopup(true)
+        const data = res.data.data
+        setGarden(data.growthStatus)
+        if (!data.hasPlanted) setShowPopup(true)
       })
       .catch(err => {
         console.error(err)
@@ -37,16 +37,16 @@ function Home() {
 
     // 미션 진행상황 조회
     api.get('/api/v1/growth-diary/progress')
-      .then(res => setProgress(res.data))
+      .then(res => setProgress(res.data.data))
       .catch(err => console.error(err))
 
     // 유저 정보 조회
     api.get('/user/mypage')
-      .then(res => setUser(res.data))
+      .then(res => setUser(res.data.data))
       .catch(err => console.error(err))
   }, [])
 
-  // 식물 수확
+  // 수확 함수
   const handleHarvest = async () => {
     if (!garden?.growthStatusId) return
     setHarvesting(true)
@@ -56,7 +56,7 @@ function Home() {
       )
       alert('🎉 수확 완료! 과일이 인벤토리에 추가됐어요.')
       const res = await api.get('/api/v1/growth-diary/garden')
-      setGarden(res.data)
+      setGarden(res.data.data.growthStatus)  // ← 여기
     } catch (err) {
       console.error(err)
       alert('수확에 실패했습니다.')
@@ -64,6 +64,7 @@ function Home() {
       setHarvesting(false)
     }
   }
+  
   const hasPlanted = !!garden?.growthStatusId
   const treeImage = garden ? getTreeImage(garden.growthRate, garden.itemTypeId) : null
 
