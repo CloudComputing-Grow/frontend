@@ -46,7 +46,12 @@ function Inventory() {
   const handleUseFertilizer = async () => {
     try {
       const gardenRes = await api.get('/api/v1/growth-diary/garden')
-      const growthStatusId = gardenRes.data?.growthStatusId || 1
+      const growthStatusId = gardenRes.data?.data?.growthStatus?.growthStatusId
+
+      if (!growthStatusId) {
+        alert('심어진 나무가 없습니다!')
+        return
+      }
 
       await api.post('/api/v1/inventory/consume-fertilizer', {
         itemTypeId: selectedItem.type,
