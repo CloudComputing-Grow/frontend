@@ -58,7 +58,7 @@ function Community() {
             {post.badgeType && (
               <div style={{ fontSize: '12px', marginBottom: '4px' }}>
                 {post.badgeType === 'GOLD' && '🥇'}
-                {post.badgeType === 'SILVER' && '🥈'}
+                {post.badgeType === 'NORMAL' && '🥈'}
               </div>
             )}
 
