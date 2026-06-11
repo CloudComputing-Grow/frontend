@@ -10,6 +10,7 @@ function PostDetail() {
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState('')
   const [loading, setLoading] = useState(true)
+  const [currentUserId, setCurrentUserId] = useState(null)
 
   const fetchPost = () => {
     api.get(`/api/v1/community/posts/${postId}`)
@@ -27,6 +28,13 @@ function PostDetail() {
   useEffect(() => {
     fetchPost()
     fetchComments()
+    api.get('/user/mypage')
+      .then(res => {
+        const id = Number(res.data?.data?.userId)  // user_id → userId
+        console.log('currentUserId:', id, typeof id)
+        setCurrentUserId(id)
+      })
+      .catch(err => console.error(err))
   }, [postId])
 
   const handleLike = async () => {
@@ -83,7 +91,7 @@ function PostDetail() {
         {post.badgeType && (
           <div style={{ fontSize: '12px', marginBottom: '4px' }}>
             {post.badgeType === 'GOLD' && '🥇'}
-            {post.badgeType === 'SILVER' && '🥈'}
+            {post.badgeType === 'NORMAL' && '🥈'}
           </div>
         )}
 
@@ -102,24 +110,32 @@ function PostDetail() {
             style={{ padding: '8px 16px', background: post.scrappedByUser ? '#a4c639' : '#f0f0f0', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
             🔖 {post.scrappedByUser ? '스크랩 취소' : '스크랩'}
           </button>
-          <button onClick={handleDelete}
-            style={{ padding: '8px 16px', background: '#ff6b6b', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', marginLeft: 'auto' }}>
-            삭제
-          </button>
+          {/* 내 게시글만 삭제 버튼 표시 */}
+          {post.userId === currentUserId && (
+            <button onClick={handleDelete}
+              style={{ padding: '8px 16px', background: '#ff6b6b', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', marginLeft: 'auto' }}>
+              삭제
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
       <h3 style={{ marginBottom: '12px' }}>댓글 {comments.length}개</h3>
-      {comments.map(comment => (
+      {comments.map(comment => {
+        console.log('comment.userId:', comment.userId, typeof comment.userId, '=== currentUserId:', currentUserId)  // 추가
+        return (
         <div key={comment.commentId}
           style={{ background: '#f9f9f9', borderRadius: '8px', padding: '12px', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <p style={{ fontSize: '14px', margin: 0 }}>{comment.content}</p>
-          <button onClick={() => handleCommentDelete(comment.commentId)}
-            style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '12px' }}>
-            삭제
-          </button>
+          {/* 내 댓글만 삭제 버튼 표시 */}
+          {comment.userId === currentUserId && (
+            <button onClick={() => handleCommentDelete(comment.commentId)}
+              style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '12px' }}>
+              삭제
+            </button>
+          )}
         </div>
-      ))}
+  )})}
 
       <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
         <input value={newComment} onChange={e => setNewComment(e.target.value)}
