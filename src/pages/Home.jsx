@@ -76,6 +76,7 @@ function Home() {
       alert('🎉 수확 완료! 과일이 인벤토리에 추가됐어요.')
       const res = await api.get('/api/v1/growth-diary/garden')
       setGarden(res.data.data.growthStatus)  // ← 여기
+      navigate('/missions')
     } catch (err) {
       console.error(err)
       alert('수확에 실패했습니다.')
